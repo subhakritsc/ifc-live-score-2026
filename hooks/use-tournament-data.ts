@@ -7,7 +7,7 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export function useTournamentData() {
   const { data, error, isLoading, mutate } = useSWR('/api/data', fetcher, {
-    refreshInterval: 30_000,
+    refreshInterval: 10_000,
     revalidateOnFocus: true,
     keepPreviousData: true,
   })

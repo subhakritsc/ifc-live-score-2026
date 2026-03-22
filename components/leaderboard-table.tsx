@@ -45,7 +45,7 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                 <th className="py-3 pl-4 pr-2 text-left text-[11px] font-semibold uppercase tracking-wide text-white whitespace-nowrap w-14">
                   อันดับ
                 </th>
-                <th className="py-3 px-2 text-left text-[11px] font-semibold uppercase tracking-wide text-white min-w-[110px]">
+                <th className="py-3 px-2 text-left text-[11px] font-semibold uppercase tracking-wide text-white min-w-[60px]">
                   ทีม
                 </th>
                 <th className={cn(colHeader, 'py-3 pl-2 pr-4 w-12')}>แต้ม</th>
