@@ -3,15 +3,16 @@
 import { cn } from '@/lib/utils'
 import type { TableRow } from '@/lib/types'
 
-function RankBadge({ rank }: { rank: number }) {
-  if (rank === 1) {
+function RankBadge({ rank }: { rank: number | string }) {
+  const numRank = Number(rank)
+  if (numRank === 1) {
     return (
       <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[oklch(0.78_0.17_85)] text-[oklch(0.12_0_0)] text-xs font-bold">
         1
       </span>
     )
   }
-  if (rank === 2) {
+  if (numRank === 2) {
     return (
       <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[oklch(0.72_0_0)] text-[oklch(0.12_0_0)] text-xs font-bold">
         2
@@ -76,31 +77,38 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, index) => {
-              const rank = index + 1
+            {rows.map((row) => {
+              const rank = Number(row.rank) || 0
               const isTop = rank <= 2
+              const isLive = row.status === 'live'
               return (
                 <tr
                   key={row.team}
                   className={cn(
                     'border-b border-border last:border-0 transition-colors',
-                    isTop ? 'bg-card' : 'bg-card/60'
+                    isLive && 'bg-[oklch(0.78_0.17_85/0.07)]',
+                    !isLive && isTop ? 'bg-card' : 'bg-card/60'
                   )}
                 >
                   <td className="py-3 pl-4 pr-2">
-                    <RankBadge rank={rank} />
+                    <RankBadge rank={row.rank} />
                   </td>
                   <td className="py-3 px-2">
-                    <span
-                      className={cn(
-                        'text-sm font-semibold',
-                        rank === 1 && 'text-[oklch(0.78_0.17_85)]',
-                        rank === 2 && 'text-[oklch(0.72_0_0)]',
-                        rank > 2 && 'text-foreground'
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={cn(
+                          'text-sm font-semibold',
+                          rank === 1 && 'text-[oklch(0.78_0.17_85)]',
+                          rank === 2 && 'text-[oklch(0.72_0_0)]',
+                          rank > 2 && 'text-foreground'
+                        )}
+                      >
+                        {row.team}
+                      </span>
+                      {isLive && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.78_0.17_85)] animate-pulse" />
                       )}
-                    >
-                      {row.team}
-                    </span>
+                    </div>
                   </td>
                   <td className={cn(colCell, 'py-3 px-1.5')}>{row.played}</td>
                   <td className={cn(colCell, 'py-3 px-1.5')}>{row.win}</td>
@@ -112,11 +120,11 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                     className={cn(
                       colCell,
                       'py-3 px-1.5',
-                      row.gd > 0 && 'text-[oklch(0.65_0.15_145)]',
-                      row.gd < 0 && 'text-destructive-foreground'
+                      Number(row.gd) > 0 && 'text-[oklch(0.65_0.15_145)]',
+                      Number(row.gd) < 0 && 'text-destructive-foreground'
                     )}
                   >
-                    {row.gd > 0 ? `+${row.gd}` : row.gd}
+                    {Number(row.gd) > 0 ? `+${row.gd}` : row.gd}
                   </td>
                   <td className="py-3 pl-1.5 pr-4 text-center">
                     <span className="text-sm font-bold text-foreground">{row.points}</span>

@@ -3,25 +3,31 @@
 import { cn } from '@/lib/utils'
 import type { Match } from '@/lib/types'
 
-type Status = 'upcoming' | 'live' | 'finished'
+function normalizeStatus(status: string): 'upcoming' | 'live' | 'finished' {
+  const s = status?.toLowerCase().trim() || ''
+  if (s === 'live' || s === 'playing' || s === 'กำลังแข่ง') return 'live'
+  if (s === 'finished' || s === 'ended' || s === 'จบ' || s === 'ft') return 'finished'
+  return 'upcoming'
+}
 
-function StatusBadge({ status }: { status: Status }) {
+function StatusBadge({ status }: { status: string }) {
+  const normalized = normalizeStatus(status)
   return (
     <span
       className={cn(
         'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide',
-        status === 'live' &&
+        normalized === 'live' &&
           'bg-[oklch(0.78_0.17_85/0.15)] text-[oklch(0.78_0.17_85)] border border-[oklch(0.78_0.17_85/0.3)]',
-        status === 'finished' &&
+        normalized === 'finished' &&
           'bg-[oklch(0.65_0.15_145/0.12)] text-[oklch(0.65_0.15_145)] border border-[oklch(0.65_0.15_145/0.25)]',
-        status === 'upcoming' &&
+        normalized === 'upcoming' &&
           'bg-muted text-muted-foreground border border-border'
       )}
     >
-      {status === 'live' && (
+      {normalized === 'live' && (
         <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.78_0.17_85)] animate-pulse" />
       )}
-      {status === 'live' ? 'Live' : status === 'finished' ? 'FT' : 'Soon'}
+      {normalized === 'live' ? 'Live' : normalized === 'finished' ? 'FT' : 'Soon'}
     </span>
   )
 }
@@ -70,65 +76,70 @@ export function MatchList({ matches, isLoading }: MatchListProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      {sorted.map((match) => (
-        <div
-          key={match.match_id}
-          className={cn(
-            'rounded-xl border px-4 py-3 flex items-center gap-3 transition-colors',
-            match.status === 'live'
-              ? 'bg-[oklch(0.78_0.17_85/0.07)] border-[oklch(0.78_0.17_85/0.25)]'
-              : 'bg-card border-border'
-          )}
-        >
-          {/* Time */}
-          <span className="text-xs text-muted-foreground font-mono w-10 shrink-0 tabular-nums">
-            {match.time_start}
-          </span>
-
-          {/* Match */}
-          <div className="flex-1 flex items-center justify-between gap-2 min-w-0">
-            <span
-              className={cn(
-                'text-sm font-semibold truncate text-right flex-1',
-                match.status === 'live' ? 'text-foreground' : 'text-foreground/80'
-              )}
-            >
-              {match.team_a}
+      {sorted.map((match, idx) => {
+        const status = normalizeStatus(match.status)
+        const isLive = status === 'live'
+        const isUpcoming = status === 'upcoming'
+        return (
+          <div
+            key={`${match.time_start}-${match.team_a}-${match.team_b}-${idx}`}
+            className={cn(
+              'rounded-xl border px-4 py-3 flex items-center gap-3 transition-colors',
+              isLive
+                ? 'bg-[oklch(0.78_0.17_85/0.07)] border-[oklch(0.78_0.17_85/0.25)]'
+                : 'bg-card border-border'
+            )}
+          >
+            {/* Time */}
+            <span className="text-xs text-muted-foreground font-mono w-10 shrink-0 tabular-nums">
+              {match.time_start}
             </span>
 
-            {match.status === 'upcoming' ? (
-              <span className="text-xs font-mono text-muted-foreground bg-muted rounded-lg px-3 py-1 shrink-0">
-                vs
-              </span>
-            ) : (
+            {/* Match */}
+            <div className="flex-1 flex items-center justify-between gap-2 min-w-0">
               <span
                 className={cn(
-                  'text-base font-bold font-mono tabular-nums rounded-lg px-3 py-1 shrink-0',
-                  match.status === 'live'
-                    ? 'text-[oklch(0.78_0.17_85)] bg-[oklch(0.78_0.17_85/0.1)]'
-                    : 'text-foreground bg-secondary'
+                  'text-sm font-semibold truncate text-right flex-1',
+                  isLive ? 'text-foreground' : 'text-foreground/80'
                 )}
               >
-                {match.score_a} — {match.score_b}
+                {match.team_a}
               </span>
-            )}
 
-            <span
-              className={cn(
-                'text-sm font-semibold truncate text-left flex-1',
-                match.status === 'live' ? 'text-foreground' : 'text-foreground/80'
+              {isUpcoming ? (
+                <span className="text-xs font-mono text-muted-foreground bg-muted rounded-lg px-3 py-1 shrink-0">
+                  vs
+                </span>
+              ) : (
+                <span
+                  className={cn(
+                    'text-base font-bold font-mono tabular-nums rounded-lg px-3 py-1 shrink-0',
+                    isLive
+                      ? 'text-[oklch(0.78_0.17_85)] bg-[oklch(0.78_0.17_85/0.1)]'
+                      : 'text-foreground bg-secondary'
+                  )}
+                >
+                  {match.score_a} — {match.score_b}
+                </span>
               )}
-            >
-              {match.team_b}
-            </span>
-          </div>
 
-          {/* Status */}
-          <div className="shrink-0">
-            <StatusBadge status={match.status} />
+              <span
+                className={cn(
+                  'text-sm font-semibold truncate text-left flex-1',
+                  isLive ? 'text-foreground' : 'text-foreground/80'
+                )}
+              >
+                {match.team_b}
+              </span>
+            </div>
+
+            {/* Status */}
+            <div className="shrink-0">
+              <StatusBadge status={match.status} />
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

@@ -1,31 +1,53 @@
 import { NextResponse } from 'next/server'
 
-export async function GET() {
-  const data = {
-    data: {
-      matches: [
-        ["match_id", "time_start", "round", "status", "team_a", "score_a", "score_b", "team_b"],
-        ["M001", "09:00", "group", "finished", "ปี 1", 3, 1, "ปี 2"],
-        ["M002", "10:00", "group", "finished", "ปี 3", 0, 2, "ปี 4"],
-        ["M003", "11:00", "group", "finished", "ปี 5", 1, 1, "ปี 6"],
-        ["M004", "12:00", "group", "live", "ปี 2", 1, 0, "ปี 3"],
-        ["M005", "13:00", "group", "upcoming", "ปี 1", 0, 0, "ปี 4"],
-        ["M006", "14:00", "group", "upcoming", "ปี 5", 0, 0, "ปี 2"],
-        ["M007", "15:00", "group", "upcoming", "ปี 6", 0, 0, "ปี 1"],
-        ["M008", "10:00", "final", "upcoming", "TBD", 0, 0, "TBD"],
-        ["M009", "09:30", "friendly", "finished", "ปี 1", 2, 2, "ปี 5"],
-      ],
-      sorted_table: [
-        ["team", "played", "win", "draw", "lose", "gf", "ga", "gd", "points"],
-        ["ปี 1", 3, 2, 1, 0, 8, 3, 5, 7],
-        ["ปี 4", 3, 2, 0, 1, 5, 4, 1, 6],
-        ["ปี 2", 2, 1, 0, 1, 3, 4, -1, 3],
-        ["ปี 3", 2, 1, 0, 1, 3, 4, -1, 3],
-        ["ปี 5", 2, 0, 1, 1, 2, 4, -2, 1],
-        ["ปี 6", 2, 0, 0, 2, 1, 5, -4, 0],
-      ],
-    },
-  }
+const SHEETS_API_KEY = process.env.GOOGLE_SHEETS_API_KEY
+const SHEET_ID = process.env.GOOGLE_SHEETS_ID
 
-  return NextResponse.json(data)
+async function fetchSheet(sheetName: string): Promise<unknown[][]> {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${SHEETS_API_KEY}`
+  
+  const res = await fetch(url, { 
+    next: { revalidate: 0 },
+    cache: 'no-store'
+  })
+  
+  if (!res.ok) {
+    console.log("[v0] Google Sheets API error:", res.status, await res.text())
+    throw new Error(`Failed to fetch sheet: ${sheetName}`)
+  }
+  
+  const json = await res.json()
+  return json.values || []
+}
+
+export async function GET() {
+  try {
+    if (!SHEETS_API_KEY || !SHEET_ID) {
+      console.log("[v0] Missing env vars - API_KEY:", !!SHEETS_API_KEY, "SHEET_ID:", !!SHEET_ID)
+      return NextResponse.json(
+        { error: 'Missing Google Sheets configuration' },
+        { status: 500 }
+      )
+    }
+
+    const [matchesRaw, standingsRaw] = await Promise.all([
+      fetchSheet('matches'),
+      fetchSheet('sorted_table'),
+    ])
+
+    const data = {
+      data: {
+        matches: matchesRaw,
+        sorted_table: standingsRaw,
+      },
+    }
+
+    return NextResponse.json(data)
+  } catch (error) {
+    console.log("[v0] API Error:", error)
+    return NextResponse.json(
+      { error: 'Failed to fetch data from Google Sheets' },
+      { status: 500 }
+    )
+  }
 }

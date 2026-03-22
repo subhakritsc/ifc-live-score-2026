@@ -11,8 +11,11 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>('leaderboard')
   const { data, isLoading, isError } = useTournamentData()
 
-  const groupMatches = data?.matches.filter((m) => m.round === 'group') ?? []
-  const liveCount = groupMatches.filter((m) => m.status === 'live').length
+  const matches = data?.matches ?? []
+  const liveCount = matches.filter((m) => {
+    const s = m.status?.toLowerCase().trim() || ''
+    return s === 'live' || s === 'playing' || s === 'กำลังแข่ง'
+  }).length
 
   return (
     <div className="min-h-screen bg-background flex flex-col max-w-lg mx-auto">
@@ -70,10 +73,10 @@ export default function Home() {
         {activeTab === 'scores' && (
           <section aria-label="Match scores">
             <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-1">
-              ผลการแข่งขัน · รอบแบ่งกลุ่ม
+              ผลการแข่งขัน
             </h2>
             <MatchList
-              matches={groupMatches}
+              matches={matches}
               isLoading={isLoading && !data}
             />
           </section>

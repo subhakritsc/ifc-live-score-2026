@@ -1,24 +1,32 @@
 export interface Match {
-  match_id: string
   time_start: string
+  time_end?: string
+  periods?: string
+  duration?: string
+  break?: string
   round: string
-  status: 'upcoming' | 'live' | 'finished'
+  status: string
   team_a: string
-  score_a: number
-  score_b: number
+  score_a: number | string
+  score_b: number | string
   team_b: string
+  referee_name?: string
+  referee_level?: string
+  winner?: string
 }
 
 export interface TableRow {
+  rank: number | string
   team: string
-  played: number
-  win: number
-  draw: number
-  lose: number
-  gf: number
-  ga: number
-  gd: number
-  points: number
+  played: number | string
+  win: number | string
+  draw: number | string
+  lose: number | string
+  gf: number | string
+  ga: number | string
+  gd: number | string
+  points: number | string
+  status?: string
 }
 
 export interface TournamentData {
