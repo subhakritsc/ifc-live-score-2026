@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server'
 
+export const revalidate = 10 // cache 10 วินาทีที่ Vercel Edge/Server
+
 const SHEETS_API_KEY = process.env.GOOGLE_SHEETS_API_KEY
 const SHEET_ID = process.env.GOOGLE_SHEETS_ID
 
 async function fetchSheet(sheetName: string): Promise<unknown[][]> {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${SHEETS_API_KEY}`
   
-  const res = await fetch(url, { 
-    next: { revalidate: 0 },
-    cache: 'no-store'
-  })
+  const res = await fetch(url)
   
   if (!res.ok) {
     console.log("[v0] Google Sheets API error:", res.status, await res.text())
