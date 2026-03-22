@@ -8,7 +8,9 @@ const SHEET_ID = process.env.GOOGLE_SHEETS_ID
 async function fetchSheet(sheetName: string): Promise<unknown[][]> {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${SHEETS_API_KEY}`
   
-  const res = await fetch(url)
+  const res = await fetch(url, { 
+    next: { revalidate: 10 } 
+  })
   
   if (!res.ok) {
     console.log("[v0] Google Sheets API error:", res.status, await res.text())
