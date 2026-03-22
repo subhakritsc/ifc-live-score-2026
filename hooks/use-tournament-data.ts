@@ -23,6 +23,6 @@ export function useTournamentData() {
     isLoading,
     isError: !!error,
     refresh,
-    lastUpdated: data ? new Date() : null,
+    lastUpdated: parsed?.fetched_at ? new Date(parsed.fetched_at) : null,
   }
 }

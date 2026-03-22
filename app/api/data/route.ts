@@ -38,6 +38,7 @@ export async function GET() {
       data: {
         matches: matchesRaw,
         sorted_table: standingsRaw,
+        fetched_at: new Date().toISOString(),
       },
     }
 

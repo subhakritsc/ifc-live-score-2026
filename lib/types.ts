@@ -32,6 +32,7 @@ export interface TableRow {
 export interface TournamentData {
   matches: Match[]
   sorted_table: TableRow[]
+  fetched_at?: string
 }
 
 function parseRows<T>(rows: unknown[][]): T[] {
@@ -50,10 +51,12 @@ export function parseTournamentData(raw: {
   data: {
     matches: unknown[][]
     sorted_table: unknown[][]
+    fetched_at?: string
   }
 }): TournamentData {
   return {
     matches: parseRows<Match>(raw.data.matches),
     sorted_table: parseRows<TableRow>(raw.data.sorted_table),
+    fetched_at: raw.data.fetched_at,
   }
 }

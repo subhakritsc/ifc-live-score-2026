@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { useTournamentData } from '@/hooks/use-tournament-data'
 import { LeaderboardTable } from '@/components/leaderboard-table'
@@ -11,19 +11,8 @@ import { RefreshCw } from 'lucide-react'
 export default function Home() {
   // Main tournament dashboard component
   const [activeTab, setActiveTab] = useState<TabId>('scores')
-  const { data, isLoading, isError, refresh } = useTournamentData()
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const { data, isLoading, isError, refresh, lastUpdated } = useTournamentData()
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const prevIsLoadingRef = useRef<boolean>(true)
-
-  useEffect(() => {
-    const wasLoading = prevIsLoadingRef.current
-    prevIsLoadingRef.current = isLoading
-    // Only update timestamp when loading transitions from true → false
-    if (wasLoading && !isLoading) {
-      setLastUpdated(new Date())
-    }
-  }, [isLoading])
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
@@ -31,7 +20,6 @@ export default function Home() {
     const refreshPromise = refresh()
     const delayPromise = new Promise((resolve) => setTimeout(resolve, 800))
     await Promise.all([refreshPromise, delayPromise])
-    setLastUpdated(new Date())
     setIsRefreshing(false)
   }
 
