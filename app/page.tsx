@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import { useTournamentData } from '@/hooks/use-tournament-data'
 import { LeaderboardTable } from '@/components/leaderboard-table'
 import { MatchList } from '@/components/match-list'
@@ -12,12 +13,14 @@ export default function Home() {
   const { data, isLoading, isError, refresh } = useTournamentData()
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const wasLoadingRef = useRef(false)
 
   useEffect(() => {
-    if (data && !isLoading) {
+    if (wasLoadingRef.current && !isLoading && data) {
       setLastUpdated(new Date())
     }
-  }, [data, isLoading])
+    wasLoadingRef.current = isLoading
+  }, [isLoading, data])
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
@@ -46,15 +49,14 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background border-b border-border">
         <div className="flex items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <svg className="w-6 h-6 text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 2C12 2 14.5 5.5 14.5 12C14.5 18.5 12 22 12 22" />
-              <path d="M12 2C12 2 9.5 5.5 9.5 12C9.5 18.5 12 22 12 22" />
-              <path d="M2 12H22" />
-              <path d="M4 7H20" />
-              <path d="M4 17H20" />
-            </svg>
+          <div className="flex items-center gap-2.5">
+            <Image
+              src="/logo.png"
+              alt="IFC Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
             <span className="text-lg font-bold text-foreground">
               บอลชั้นปี 2026
             </span>

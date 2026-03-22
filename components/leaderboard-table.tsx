@@ -21,8 +21,8 @@ interface LeaderboardTableProps {
 }
 
 export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
-  const colHeader = 'text-[11px] font-semibold text-muted-foreground uppercase tracking-wide text-center'
-  const colCell = 'text-sm text-center text-foreground'
+  const colHeader = 'text-[11px] font-semibold text-muted-foreground uppercase tracking-wide text-center whitespace-nowrap'
+  const colCell = 'text-sm text-center text-foreground tabular-nums'
 
   if (isLoading) {
     return (
@@ -35,74 +35,110 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
   }
 
   return (
-    <div className="rounded-xl bg-card border-l-4 border-l-primary border border-border overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[360px]">
-          <thead>
-            <tr className="border-b border-border bg-secondary/50">
-              <th className={cn(colHeader, 'py-3 pl-4 pr-2 text-left w-12')}>อันดับ</th>
-              <th className={cn(colHeader, 'py-3 px-2 text-left')}>ทีม</th>
-              <th className={cn(colHeader, 'py-3 px-2 w-12')}>แข่ง</th>
-              <th className={cn(colHeader, 'py-3 px-2 w-12')}>ชนะ</th>
-              <th className={cn(colHeader, 'py-3 px-2 w-12')}>เสมอ</th>
-              <th className={cn(colHeader, 'py-3 px-2 w-12')}>แพ้</th>
-              <th className={cn(colHeader, 'py-3 px-2 w-12')}>ได้</th>
-              <th className={cn(colHeader, 'py-3 px-2 w-12')}>เสีย</th>
-              <th className={cn(colHeader, 'py-3 px-2 w-12')}>ต่าง</th>
-              <th className={cn(colHeader, 'py-3 pl-2 pr-4 w-12')}>แต้ม</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => {
-              const rank = Number(row.rank) || 0
-              const isLive = row.status?.toLowerCase() === 'live'
-              return (
-                <tr
-                  key={row.team}
-                  className={cn(
-                    'border-b border-border last:border-0 transition-colors',
-                    isLive && 'bg-primary/5'
-                  )}
-                >
-                  <td className="py-4 pl-4 pr-2">
-                    <span className="text-lg font-bold text-foreground">
-                      {rank}
-                    </span>
-                  </td>
-                  <td className="py-4 px-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-foreground">
-                        {row.team}
-                      </span>
-                      {isLive && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                      )}
-                    </div>
-                  </td>
-                  <td className={cn(colCell, 'py-4 px-2')}>{row.played}</td>
-                  <td className={cn(colCell, 'py-4 px-2')}>{row.win}</td>
-                  <td className={cn(colCell, 'py-4 px-2')}>{row.draw}</td>
-                  <td className={cn(colCell, 'py-4 px-2')}>{row.lose}</td>
-                  <td className={cn(colCell, 'py-4 px-2')}>{row.gf}</td>
-                  <td className={cn(colCell, 'py-4 px-2')}>{row.ga}</td>
-                  <td
+    <div className="space-y-3">
+      {/* Legend */}
+      <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
+          <span className="text-xs text-muted-foreground font-medium">เข้ารอบชิง</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/40 shrink-0" />
+          <span className="text-xs text-muted-foreground font-medium">ตกรอบ</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0" />
+          <span className="text-xs text-muted-foreground font-medium">กำลังแข่ง</span>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="rounded-xl bg-card border border-border overflow-hidden">
+        <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+          <table className="w-full" style={{ minWidth: '420px' }}>
+            <thead>
+              <tr className="bg-foreground text-background">
+                <th className="py-3 pl-4 pr-2 text-left text-[11px] font-semibold uppercase tracking-wide whitespace-nowrap w-14">
+                  อันดับ
+                </th>
+                <th className="py-3 px-2 text-left text-[11px] font-semibold uppercase tracking-wide min-w-[110px]">
+                  ทีม
+                </th>
+                <th className={cn(colHeader, 'py-3 px-2 w-10')}>แข่ง</th>
+                <th className={cn(colHeader, 'py-3 px-2 w-10')}>ชนะ</th>
+                <th className={cn(colHeader, 'py-3 px-2 w-10')}>เสมอ</th>
+                <th className={cn(colHeader, 'py-3 px-2 w-10')}>แพ้</th>
+                <th className={cn(colHeader, 'py-3 px-2 w-10')}>ได้</th>
+                <th className={cn(colHeader, 'py-3 px-2 w-10')}>เสีย</th>
+                <th className={cn(colHeader, 'py-3 px-2 w-10')}>ต่าง</th>
+                <th className={cn(colHeader, 'py-3 pl-2 pr-4 w-10')}>แต้ม</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, index) => {
+                const rank = Number(row.rank) || index + 1
+                const isQualified = rank <= 2
+                const isLive = row.status?.toLowerCase() === 'live'
+                return (
+                  <tr
+                    key={row.team}
                     className={cn(
-                      colCell,
-                      'py-4 px-2',
-                      Number(row.gd) > 0 && 'text-green-600',
-                      Number(row.gd) < 0 && 'text-primary'
+                      'border-b border-border last:border-0 transition-colors',
+                      isLive && 'bg-green-50'
                     )}
                   >
-                    {Number(row.gd) > 0 ? `+${row.gd}` : row.gd}
-                  </td>
-                  <td className="py-4 pl-2 pr-4 text-center">
-                    <span className="text-sm font-bold text-foreground">{row.points}</span>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+                    {/* Rank with qualified indicator */}
+                    <td className="py-3.5 pl-0 pr-2 relative">
+                      <div className="flex items-center">
+                        <span
+                          className={cn(
+                            'w-1 self-stretch mr-3 rounded-r-full',
+                            isQualified ? 'bg-green-500' : 'bg-transparent'
+                          )}
+                        />
+                        <span className="text-base font-bold text-foreground w-6 text-center">
+                          {rank}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Team name — wider, no wrap */}
+                    <td className="py-3.5 px-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-sm font-semibold text-foreground whitespace-nowrap">
+                          {row.team}
+                        </span>
+                        {isLive && (
+                          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
+                        )}
+                      </div>
+                    </td>
+
+                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.played}</td>
+                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.win}</td>
+                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.draw}</td>
+                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.lose}</td>
+                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.gf}</td>
+                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.ga}</td>
+                    <td
+                      className={cn(
+                        colCell,
+                        'py-3.5 px-2',
+                        Number(row.gd) > 0 && 'text-green-600',
+                        Number(row.gd) < 0 && 'text-primary'
+                      )}
+                    >
+                      {Number(row.gd) > 0 ? `+${row.gd}` : row.gd}
+                    </td>
+                    <td className="py-3.5 pl-2 pr-4 text-center">
+                      <span className="text-sm font-bold text-foreground">{row.points}</span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

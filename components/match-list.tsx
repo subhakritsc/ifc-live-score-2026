@@ -70,19 +70,19 @@ function MatchCard({ match, isLive = false }: MatchCardProps) {
       </div>
 
       {/* Teams + Score */}
-      <div className="flex items-center justify-between">
-        <span className="text-base font-semibold text-foreground flex-1">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-base font-semibold text-foreground flex-1 min-w-0 truncate">
           {match.team_a}
         </span>
         
         <span className={cn(
-          'text-xl font-bold tabular-nums px-4',
+          'text-xl font-bold tabular-nums px-3 shrink-0',
           isLive ? 'text-primary' : 'text-foreground'
         )}>
           {match.score_a ?? 0} - {match.score_b ?? 0}
         </span>
         
-        <span className="text-base font-semibold text-foreground flex-1 text-right">
+        <span className="text-base font-semibold text-foreground flex-1 text-right min-w-0 truncate">
           {match.team_b}
         </span>
       </div>
