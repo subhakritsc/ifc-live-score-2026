@@ -13,20 +13,15 @@ export default function Home() {
   const { data, isLoading, isError, refresh } = useTournamentData()
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const wasLoadingRef = useRef(false)
-  const hasSetInitialRef = useRef(false)
+  const prevIsLoadingRef = useRef<boolean>(true)
 
   useEffect(() => {
-    // Set lastUpdated only when isLoading flips from true → false (fetch completed)
-    // or on the very first successful load
-    if (!isLoading && data) {
-      if (wasLoadingRef.current || !hasSetInitialRef.current) {
-        setLastUpdated(new Date())
-        hasSetInitialRef.current = true
-      }
+    const wasLoading = prevIsLoadingRef.current
+    prevIsLoadingRef.current = isLoading
+    // Only update timestamp when loading transitions from true → false
+    if (wasLoading && !isLoading) {
+      setLastUpdated(new Date())
     }
-    wasLoadingRef.current = isLoading
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading])
 
   const handleRefresh = async () => {

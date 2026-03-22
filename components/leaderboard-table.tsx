@@ -60,14 +60,14 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                 <th className="py-3 px-2 text-left text-[11px] font-semibold uppercase tracking-wide text-white min-w-[110px]">
                   ทีม
                 </th>
+                <th className={cn(colHeader, 'py-3 pl-2 pr-4 w-12')}>แต้ม</th>
                 <th className={cn(colHeader, 'py-3 px-2 w-10')}>แข่ง</th>
                 <th className={cn(colHeader, 'py-3 px-2 w-10')}>ชนะ</th>
                 <th className={cn(colHeader, 'py-3 px-2 w-10')}>เสมอ</th>
                 <th className={cn(colHeader, 'py-3 px-2 w-10')}>แพ้</th>
                 <th className={cn(colHeader, 'py-3 px-2 w-10')}>ได้</th>
                 <th className={cn(colHeader, 'py-3 px-2 w-10')}>เสีย</th>
-                <th className={cn(colHeader, 'py-3 px-2 w-10')}>ต่าง</th>
-                <th className={cn(colHeader, 'py-3 pl-2 pr-4 w-10')}>แต้ม</th>
+                <th className={cn(colHeader, 'py-3 pl-2 pr-4 w-10')}>ต่าง</th>
               </tr>
             </thead>
             <tbody>
@@ -110,6 +110,9 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                       </div>
                     </td>
 
+                    <td className="py-3.5 pl-2 pr-4 text-center">
+                      <span className="text-sm font-bold text-foreground">{row.points}</span>
+                    </td>
                     <td className={cn(colCell, 'py-3.5 px-2')}>{row.played}</td>
                     <td className={cn(colCell, 'py-3.5 px-2')}>{row.win}</td>
                     <td className={cn(colCell, 'py-3.5 px-2')}>{row.draw}</td>
@@ -119,15 +122,12 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                     <td
                       className={cn(
                         colCell,
-                        'py-3.5 px-2',
+                        'py-3.5 pl-2 pr-4',
                         Number(row.gd) > 0 && 'text-green-600',
                         Number(row.gd) < 0 && 'text-primary'
                       )}
                     >
                       {Number(row.gd) > 0 ? `+${row.gd}` : row.gd}
-                    </td>
-                    <td className="py-3.5 pl-2 pr-4 text-center">
-                      <span className="text-sm font-bold text-foreground">{row.points}</span>
                     </td>
                   </tr>
                 )
