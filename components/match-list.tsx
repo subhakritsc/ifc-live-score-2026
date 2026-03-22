@@ -12,7 +12,7 @@ function StatusBadge({ status }: { status: string }) {
       className={cn(
         'inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-semibold uppercase tracking-wide',
         isLive
-          ? 'bg-primary text-primary-foreground'
+          ? 'bg-green-500 text-white'
           : 'bg-secondary text-secondary-foreground'
       )}
     >
@@ -143,9 +143,9 @@ export function MatchList({ liveMatches, upcomingMatches, isLoading }: MatchList
       {/* Upcoming Matches */}
       {hasUpcoming && (
         <section>
-          <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">
+          {/* <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">
             รายการแข่งขัน
-          </h2>
+          </h2> */}
           <div className="flex flex-col gap-3">
             {upcomingMatches
               .sort((a, b) => a.time_start.localeCompare(b.time_start))

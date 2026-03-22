@@ -37,6 +37,10 @@ export default function Home() {
     const s = m.status?.toLowerCase().trim() || ''
     return s === 'live' || s === 'playing'
   })
+  const finishedMatches = matches.filter((m) => {
+    const s = m.status?.toLowerCase().trim() || ''
+    return s === 'ended' || s === 'finished'
+  })
   const upcomingMatches = matches.filter((m) => {
     const s = m.status?.toLowerCase().trim() || ''
     return s !== 'live' && s !== 'playing' && s !== 'ended' && s !== 'finished'
@@ -81,7 +85,7 @@ export default function Home() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 px-4 pt-4 pb-24">
+      <main suppressHydrationWarning className="flex-1 px-4 pt-4 pb-24">
         {isError && (
           <div className="mb-4 px-4 py-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm">
             ไม่สามารถโหลดข้อมูลได้ กำลังลองใหม่...
@@ -89,12 +93,39 @@ export default function Home() {
         )}
 
         {activeTab === 'scores' && (
-          <MatchList
-            matches={matches}
-            liveMatches={liveMatches}
-            upcomingMatches={upcomingMatches}
-            isLoading={isLoading && !data}
-          />
+          <section aria-label="รายการแข่งขัน">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-10 bg-primary rounded-full" />
+              <div>
+                <p className="text-xs font-semibold text-primary uppercase tracking-wider">การแข่งขัน</p>
+                <h2 className="text-xl font-bold text-foreground">รายการแข่งขัน</h2>
+              </div>
+            </div>
+            <MatchList
+              matches={matches}
+              liveMatches={liveMatches}
+              upcomingMatches={upcomingMatches}
+              isLoading={isLoading && !data}
+            />
+          </section>
+        )}
+
+        {activeTab === 'finished' && (
+          <section aria-label="รายการแข่งขันที่ผ่านไปแล้ว">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-10 bg-primary rounded-full" />
+              <div>
+                <p className="text-xs font-semibold text-primary uppercase tracking-wider">ผลการแข่งขัน</p>
+                <h2 className="text-xl font-bold text-foreground">รายการแข่งขันที่ผ่านไปแล้ว</h2>
+              </div>
+            </div>
+            <MatchList
+              matches={matches}
+              liveMatches={[]}
+              upcomingMatches={finishedMatches}
+              isLoading={isLoading && !data}
+            />
+          </section>
         )}
 
         {activeTab === 'leaderboard' && (

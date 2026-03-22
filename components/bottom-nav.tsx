@@ -1,9 +1,9 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { Flag, Table2 } from 'lucide-react'
+import { Flag, History, Table2 } from 'lucide-react'
 
-export type TabId = 'scores' | 'leaderboard'
+export type TabId = 'scores' | 'finished' | 'leaderboard'
 
 interface BottomNavProps {
   activeTab: TabId
@@ -13,12 +13,17 @@ interface BottomNavProps {
 const tabs = [
   {
     id: 'scores' as TabId,
-    label: 'MATCHES',
+    label: 'แข่งขัน',
     icon: Flag,
   },
   {
+    id: 'finished' as TabId,
+    label: 'ผลแข่ง',
+    icon: History,
+  },
+  {
     id: 'leaderboard' as TabId,
-    label: 'TABLE',
+    label: 'ตาราง',
     icon: Table2,
   },
 ]

@@ -36,18 +36,6 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
 
   return (
     <div className="space-y-3">
-      {/* Legend */}
-      <div className="flex items-center gap-4 flex-wrap">
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-sm bg-primary shrink-0" />
-          <span className="text-xs text-muted-foreground font-medium">เข้ารอบชิง</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0" />
-          <span className="text-xs text-muted-foreground font-medium">กำลังแข่ง</span>
-        </div>
-      </div>
-
       {/* Table */}
       <div className="rounded-xl bg-card border border-border overflow-hidden">
         <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
@@ -75,6 +63,8 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                 const rank = Number(row.rank) || index + 1
                 const isQualified = rank <= 2
                 const isLive = row.status?.toLowerCase() === 'live'
+                const qualifiedIndicatorColor =
+                  rank === 1 ? 'bg-amber-400' : rank === 2 ? 'bg-slate-300' : 'bg-primary'
                 return (
                   <tr
                     key={row.team}
@@ -89,7 +79,7 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                         <span
                           className={cn(
                             'w-1 self-stretch mr-3 rounded-r-full',
-                            isQualified ? 'bg-primary' : 'bg-transparent'
+                            isQualified ? qualifiedIndicatorColor : 'bg-transparent'
                           )}
                         />
                         <span className="text-base font-bold text-foreground w-6 text-center">
@@ -134,6 +124,21 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
               })}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1 shrink-0">
+            <span className="w-3 h-3 rounded-sm bg-amber-400" />
+            <span className="w-3 h-3 rounded-sm bg-slate-300" />
+          </span>
+          <span className="text-xs text-muted-foreground font-medium">เข้ารอบชิง</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0" />
+          <span className="text-xs text-muted-foreground font-medium">กำลังแข่ง</span>
         </div>
       </div>
     </div>
