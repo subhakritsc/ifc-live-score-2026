@@ -47,22 +47,38 @@ function MatchCard({ match, isLive = false }: MatchCardProps) {
     ? `${match.time_start} - ${match.time_end}`
     : match.time_start
   
-  const round = match.round ? ` • ${match.round.toUpperCase()}` : ''
+  const roundText = match.round?.toUpperCase() || ''
+  const round = match.round ? ` • ${roundText}` : ''
+
+  const isFinal = roundText.includes('FINAL') || roundText.includes('ชิง')
+  const isFriendly = roundText.includes('FRIENDLY') || roundText.includes('กระชับมิตร')
+
+  let borderClass = 'border-border'
+  let textClass = 'text-muted-foreground'
+
+  if (isLive) {
+    borderClass = 'border-primary'
+    textClass = 'text-primary'
+  } else if (isFinal) {
+    borderClass = 'border-amber-400 shadow-sm shadow-amber-400/20'
+    textClass = 'text-amber-500'
+  } else if (isFriendly) {
+    borderClass = 'border-sky-400'
+    textClass = 'text-sky-500'
+  }
 
   return (
     <div
       className={cn(
-        'rounded-xl border p-4 transition-colors',
-        isLive
-          ? 'bg-card border-primary'
-          : 'bg-card border-border'
+        'rounded-xl border p-4 transition-colors bg-card',
+        borderClass
       )}
     >
       {/* Header: Time + Status */}
       <div className="flex items-center justify-between mb-3">
         <span className={cn(
           'text-xs font-medium',
-          isLive ? 'text-primary' : 'text-muted-foreground'
+          textClass
         )}>
           {timeRange}{round}
         </span>
