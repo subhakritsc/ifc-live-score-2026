@@ -27,7 +27,10 @@ export default function Home() {
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
-    await refresh()
+    // Run refresh and a minimum 800ms delay in parallel
+    const refreshPromise = refresh()
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, 800))
+    await Promise.all([refreshPromise, delayPromise])
     setLastUpdated(new Date())
     setIsRefreshing(false)
   }
