@@ -39,7 +39,7 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
       {/* Table */}
       <div className="rounded-xl bg-card border border-border overflow-hidden">
         <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
-          <table className="w-full" style={{ minWidth: '420px' }}>
+          <table className="w-full text-sm sm:text-base">
             <thead>
               <tr className="bg-foreground text-white">
                 <th className="py-3 pl-4 pr-2 text-left text-[11px] font-semibold uppercase tracking-wide text-white whitespace-nowrap w-14">
@@ -49,13 +49,13 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                   ทีม
                 </th>
                 <th className={cn(colHeader, 'py-3 pl-2 pr-4 w-12')}>แต้ม</th>
-                <th className={cn(colHeader, 'py-3 px-2 w-10')}>แข่ง</th>
-                <th className={cn(colHeader, 'py-3 px-2 w-10')}>ชนะ</th>
-                <th className={cn(colHeader, 'py-3 px-2 w-10')}>เสมอ</th>
-                <th className={cn(colHeader, 'py-3 px-2 w-10')}>แพ้</th>
-                <th className={cn(colHeader, 'py-3 px-2 w-10')}>ได้</th>
-                <th className={cn(colHeader, 'py-3 px-2 w-10')}>เสีย</th>
-                <th className={cn(colHeader, 'py-3 pl-2 pr-4 w-10')}>ต่าง</th>
+                <th className={cn(colHeader, 'py-3 px-1 w-8')}>แข่ง</th>
+                <th className={cn(colHeader, 'py-3 px-1 w-8')}>ชนะ</th>
+                <th className={cn(colHeader, 'py-3 px-1 w-8')}>เสมอ</th>
+                <th className={cn(colHeader, 'py-3 px-1 w-8')}>แพ้</th>
+                <th className={cn(colHeader, 'py-3 px-1 w-8')}>ได้</th>
+                <th className={cn(colHeader, 'py-3 px-1 w-8')}>เสีย</th>
+                <th className={cn(colHeader, 'py-3 pl-1 pr-3 w-8')}>+/-</th>
               </tr>
             </thead>
             <tbody>
@@ -103,16 +103,16 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                     <td className="py-3.5 pl-2 pr-4 text-center">
                       <span className="text-sm font-bold text-foreground">{row.points}</span>
                     </td>
-                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.played}</td>
-                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.win}</td>
-                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.draw}</td>
-                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.lose}</td>
-                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.gf}</td>
-                    <td className={cn(colCell, 'py-3.5 px-2')}>{row.ga}</td>
+                    <td className={cn(colCell, 'py-3.5 px-1')}>{row.played}</td>
+                    <td className={cn(colCell, 'py-3.5 px-1')}>{row.win}</td>
+                    <td className={cn(colCell, 'py-3.5 px-1')}>{row.draw}</td>
+                    <td className={cn(colCell, 'py-3.5 px-1')}>{row.lose}</td>
+                    <td className={cn(colCell, 'py-3.5 px-1')}>{row.gf}</td>
+                    <td className={cn(colCell, 'py-3.5 px-1')}>{row.ga}</td>
                     <td
                       className={cn(
                         colCell,
-                        'py-3.5 pl-2 pr-4',
+                        'py-3.5 pl-1 pr-3',
                         Number(row.gd) > 0 && 'text-green-600',
                         Number(row.gd) < 0 && 'text-primary'
                       )}
