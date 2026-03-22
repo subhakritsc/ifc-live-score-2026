@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
 
-export const revalidate = 10 // cache 10 วินาทีที่ Vercel Edge/Server
-
 const SHEETS_API_KEY = process.env.GOOGLE_SHEETS_API_KEY
 const SHEET_ID = process.env.GOOGLE_SHEETS_ID
 
