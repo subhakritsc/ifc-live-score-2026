@@ -9,6 +9,7 @@ import { BottomNav, type TabId } from '@/components/bottom-nav'
 import { RefreshCw } from 'lucide-react'
 
 export default function Home() {
+  // Main tournament dashboard component
   const [activeTab, setActiveTab] = useState<TabId>('scores')
   const { data, isLoading, isError, refresh } = useTournamentData()
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
