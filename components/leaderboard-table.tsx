@@ -21,7 +21,7 @@ interface LeaderboardTableProps {
 }
 
 export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
-  const colHeader = 'text-[11px] font-semibold text-muted-foreground uppercase tracking-wide text-center whitespace-nowrap'
+  const colHeader = 'text-[11px] font-semibold text-white uppercase tracking-wide text-center whitespace-nowrap'
   const colCell = 'text-sm text-center text-foreground tabular-nums'
 
   if (isLoading) {
@@ -39,12 +39,8 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
       {/* Legend */}
       <div className="flex items-center gap-4 flex-wrap">
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
+          <span className="w-3 h-3 rounded-sm bg-primary shrink-0" />
           <span className="text-xs text-muted-foreground font-medium">เข้ารอบชิง</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/40 shrink-0" />
-          <span className="text-xs text-muted-foreground font-medium">ตกรอบ</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0" />
@@ -57,11 +53,11 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
         <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
           <table className="w-full" style={{ minWidth: '420px' }}>
             <thead>
-              <tr className="bg-foreground text-background">
-                <th className="py-3 pl-4 pr-2 text-left text-[11px] font-semibold uppercase tracking-wide whitespace-nowrap w-14">
+              <tr className="bg-foreground text-white">
+                <th className="py-3 pl-4 pr-2 text-left text-[11px] font-semibold uppercase tracking-wide text-white whitespace-nowrap w-14">
                   อันดับ
                 </th>
-                <th className="py-3 px-2 text-left text-[11px] font-semibold uppercase tracking-wide min-w-[110px]">
+                <th className="py-3 px-2 text-left text-[11px] font-semibold uppercase tracking-wide text-white min-w-[110px]">
                   ทีม
                 </th>
                 <th className={cn(colHeader, 'py-3 px-2 w-10')}>แข่ง</th>
@@ -93,7 +89,7 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                         <span
                           className={cn(
                             'w-1 self-stretch mr-3 rounded-r-full',
-                            isQualified ? 'bg-green-500' : 'bg-transparent'
+                            isQualified ? 'bg-primary' : 'bg-transparent'
                           )}
                         />
                         <span className="text-base font-bold text-foreground w-6 text-center">

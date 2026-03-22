@@ -14,13 +14,20 @@ export default function Home() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const wasLoadingRef = useRef(false)
+  const hasSetInitialRef = useRef(false)
 
   useEffect(() => {
-    if (wasLoadingRef.current && !isLoading && data) {
-      setLastUpdated(new Date())
+    // Set lastUpdated only when isLoading flips from true → false (fetch completed)
+    // or on the very first successful load
+    if (!isLoading && data) {
+      if (wasLoadingRef.current || !hasSetInitialRef.current) {
+        setLastUpdated(new Date())
+        hasSetInitialRef.current = true
+      }
     }
     wasLoadingRef.current = isLoading
-  }, [isLoading, data])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading])
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
