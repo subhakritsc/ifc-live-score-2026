@@ -68,10 +68,7 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
                 return (
                   <tr
                     key={row.team}
-                    className={cn(
-                      'border-b border-border last:border-0 transition-colors',
-                      isLive && 'bg-green-50'
-                    )}
+                    className="border-b border-border last:border-0 transition-colors"
                   >
                     {/* Rank with qualified indicator */}
                     <td className="py-3.5 pl-0 pr-2 relative">
@@ -137,7 +134,7 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
           <span className="text-xs text-muted-foreground font-medium">เข้ารอบชิง</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0" />
+          <span className="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
           <span className="text-xs text-muted-foreground font-medium">กำลังแข่ง</span>
         </div>
       </div>

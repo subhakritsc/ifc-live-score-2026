@@ -6,13 +6,16 @@ import type { Match } from '@/lib/types'
 function StatusBadge({ status }: { status: string }) {
   const s = status?.toLowerCase().trim() || ''
   const isLive = s === 'live' || s === 'playing'
+  const isFinished = s === 'ended' || s === 'finished' || s === 'ft' || s.includes('จบ')
   
   return (
     <span
       className={cn(
         'inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-semibold uppercase tracking-wide',
         isLive
-          ? 'bg-green-500 text-white'
+          ? 'bg-green-500 text-white animate-pulse'
+          : isFinished
+          ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
           : 'bg-secondary text-secondary-foreground'
       )}
     >
@@ -111,9 +114,10 @@ interface MatchListProps {
   liveMatches: Match[]
   upcomingMatches: Match[]
   isLoading: boolean
+  upcomingTitle?: string
 }
 
-export function MatchList({ liveMatches, upcomingMatches, isLoading }: MatchListProps) {
+export function MatchList({ liveMatches, upcomingMatches, isLoading, upcomingTitle }: MatchListProps) {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-3">
@@ -140,8 +144,7 @@ export function MatchList({ liveMatches, upcomingMatches, isLoading }: MatchList
       {/* Live Matches */}
       {hasLive && (
         <section>
-          <h2 className="flex items-center gap-2 text-sm font-bold text-foreground uppercase tracking-wider mb-3">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">
             กำลังแข่งขัน
           </h2>
           <div className="flex flex-col gap-3">
@@ -159,9 +162,11 @@ export function MatchList({ liveMatches, upcomingMatches, isLoading }: MatchList
       {/* Upcoming Matches */}
       {hasUpcoming && (
         <section>
-          {/* <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">
-            รายการแข่งขัน
-          </h2> */}
+          {upcomingTitle && (
+            <h2 className="text-sm font-bold text-foreground uppercase tracking-wider mb-3">
+              {upcomingTitle}
+            </h2>
+          )}
           <div className="flex flex-col gap-3">
             {upcomingMatches
               .sort((a, b) => a.time_start.localeCompare(b.time_start))

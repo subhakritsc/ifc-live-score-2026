@@ -106,6 +106,7 @@ export default function Home() {
               liveMatches={liveMatches}
               upcomingMatches={upcomingMatches}
               isLoading={isLoading && !data}
+              upcomingTitle="ที่กำลังจะมาถึง"
             />
           </section>
         )}
@@ -143,6 +144,13 @@ export default function Home() {
             />
           </section>
         )}
+
+        {/* Footer Credit */}
+        <div className="mt-14 pb-4 flex justify-center opacity-30">
+          <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-foreground">
+            Created by SubhakritSC
+          </span>
+        </div>
       </main>
 
       {/* Bottom Navigation */}
