@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTournamentData } from '@/hooks/use-tournament-data'
 import { LeaderboardTable } from '@/components/leaderboard-table'
 import { MatchList } from '@/components/match-list'
@@ -8,75 +8,101 @@ import { BottomNav, type TabId } from '@/components/bottom-nav'
 import { RefreshCw } from 'lucide-react'
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<TabId>('leaderboard')
-  const { data, isLoading, isError } = useTournamentData()
+  const [activeTab, setActiveTab] = useState<TabId>('scores')
+  const { data, isLoading, isError, refresh } = useTournamentData()
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  useEffect(() => {
+    if (data && !isLoading) {
+      setLastUpdated(new Date())
+    }
+  }, [data, isLoading])
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    await refresh()
+    setLastUpdated(new Date())
+    setIsRefreshing(false)
+  }
 
   const matches = data?.matches ?? []
-  const liveCount = matches.filter((m) => {
+  const liveMatches = matches.filter((m) => {
     const s = m.status?.toLowerCase().trim() || ''
-    return s === 'live' || s === 'playing' || s === 'กำลังแข่ง'
-  }).length
+    return s === 'live' || s === 'playing'
+  })
+  const upcomingMatches = matches.filter((m) => {
+    const s = m.status?.toLowerCase().trim() || ''
+    return s !== 'live' && s !== 'playing' && s !== 'ended' && s !== 'finished'
+  })
+
+  const formatLastUpdated = (date: Date | null) => {
+    if (!date) return ''
+    return date.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col max-w-lg mx-auto">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-foreground tracking-tight">
-              Football Cup
+      <header className="sticky top-0 z-40 bg-background border-b border-border">
+        <div className="flex items-center justify-between px-4 py-4">
+          <div className="flex items-center gap-3">
+            <svg className="w-6 h-6 text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 2C12 2 14.5 5.5 14.5 12C14.5 18.5 12 22 12 22" />
+              <path d="M12 2C12 2 9.5 5.5 9.5 12C9.5 18.5 12 22 12 22" />
+              <path d="M2 12H22" />
+              <path d="M4 7H20" />
+              <path d="M4 17H20" />
+            </svg>
+            <span className="text-lg font-bold text-foreground">
+              บอลชั้นปี 2026
             </span>
-            {liveCount > 0 && (
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[oklch(0.78_0.17_85/0.15)] border border-[oklch(0.78_0.17_85/0.3)] text-[oklch(0.78_0.17_85)] text-[10px] font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.78_0.17_85)] animate-pulse" />
-                {liveCount} Live
+          </div>
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing || isLoading}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors disabled:opacity-50"
+            aria-label="รีเฟรชข้อมูล"
+          >
+            <RefreshCw size={14} className={isRefreshing || isLoading ? 'animate-spin' : ''} />
+            {lastUpdated && (
+              <span className="text-xs text-muted-foreground">
+                {formatLastUpdated(lastUpdated)}
               </span>
             )}
-          </div>
-          <div className="flex items-center gap-1 text-muted-foreground text-[10px]">
-            <RefreshCw size={10} className={isLoading ? 'animate-spin' : ''} />
-            <span>30s</span>
-          </div>
+          </button>
         </div>
       </header>
 
       {/* Content */}
-      <main className="flex-1 px-3 pt-4 pb-24">
+      <main className="flex-1 px-4 pt-4 pb-24">
         {isError && (
-          <div className="mb-3 px-4 py-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive-foreground text-xs">
+          <div className="mb-4 px-4 py-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm">
             ไม่สามารถโหลดข้อมูลได้ กำลังลองใหม่...
           </div>
         )}
 
-        {activeTab === 'leaderboard' && (
-          <section aria-label="Leaderboard">
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-1">
-              ตารางคะแนน
-            </h2>
-            <LeaderboardTable
-              rows={data?.sorted_table ?? []}
-              isLoading={isLoading && !data}
-            />
-            <div className="mt-3 flex items-center gap-4 px-1">
-              <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                <span className="w-3 h-3 rounded-full bg-[oklch(0.78_0.17_85)]" />
-                อันดับ 1
-              </span>
-              <span className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                <span className="w-3 h-3 rounded-full bg-[oklch(0.72_0_0)]" />
-                อันดับ 2
-              </span>
-            </div>
-          </section>
+        {activeTab === 'scores' && (
+          <MatchList
+            matches={matches}
+            liveMatches={liveMatches}
+            upcomingMatches={upcomingMatches}
+            isLoading={isLoading && !data}
+          />
         )}
 
-        {activeTab === 'scores' && (
-          <section aria-label="Match scores">
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-1">
-              ผลการแข่งขัน
-            </h2>
-            <MatchList
-              matches={matches}
+        {activeTab === 'leaderboard' && (
+          <section aria-label="ตารางคะแนน">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-10 bg-primary rounded-full" />
+              <div>
+                <p className="text-xs font-semibold text-primary uppercase tracking-wider">รอบแบ่งกลุ่ม</p>
+                <h2 className="text-xl font-bold text-foreground">ตารางคะแนน</h2>
+              </div>
+            </div>
+            <LeaderboardTable
+              rows={data?.sorted_table ?? []}
               isLoading={isLoading && !data}
             />
           </section>
