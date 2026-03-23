@@ -138,6 +138,17 @@ export function LeaderboardTable({ rows, isLoading }: LeaderboardTableProps) {
           <span className="text-xs text-muted-foreground font-medium">กำลังแข่ง</span>
         </div>
       </div>
+
+      {/* Tiebreaker Info */}
+      <div className="text-xs text-muted-foreground p-3 border-2 border-red-500 rounded-lg bg-red-50 dark:bg-red-950/20 w-full">
+        <div className="font-medium text-red-700 dark:text-red-300">เกณฑ์การจัดอันดับ</div>
+        <div className="flex flex-wrap gap-2 mt-1 text-red-600 dark:text-red-400">
+          <div>1. คะแนน</div>
+          <div>2. ผลต่างประตู</div>
+          <div>3. ประตูที่ยิงได้</div>
+          <div>4. จับสลาก</div>
+        </div>
+      </div>
     </div>
   )
 }
