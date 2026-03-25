@@ -29,15 +29,17 @@ export async function GET() {
       )
     }
 
-    const [matchesRaw, standingsRaw] = await Promise.all([
+    const [matchesRaw, standingsRaw, commentsRaw] = await Promise.all([
       fetchSheet('matches'),
       fetchSheet('sorted_table'),
+      fetchSheet('comment'),
     ])
 
     const data = {
       data: {
         matches: matchesRaw,
         sorted_table: standingsRaw,
+        comments: commentsRaw,
         fetched_at: new Date().toISOString(),
       },
     }

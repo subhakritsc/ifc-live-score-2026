@@ -11,7 +11,7 @@ import { RefreshCw } from 'lucide-react'
 export default function Home() {
   // Main tournament dashboard component
   const [activeTab, setActiveTab] = useState<TabId>('scores')
-  const { data, isLoading, isError, refresh, lastUpdated } = useTournamentData()
+  const { data, isLoading, isError, refresh, postComment, lastUpdated } = useTournamentData()
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const handleRefresh = async () => {
@@ -93,7 +93,6 @@ export default function Home() {
               </div>
             </div>
             <MatchList
-              matches={matches}
               liveMatches={liveMatches}
               upcomingMatches={upcomingMatches}
               isLoading={isLoading && !data}
@@ -112,10 +111,12 @@ export default function Home() {
               </div>
             </div>
             <MatchList
-              matches={matches}
               liveMatches={[]}
               upcomingMatches={finishedMatches}
               isLoading={isLoading && !data}
+              comments={data?.comments ?? []}
+              onPostComment={postComment}
+              onRefreshComments={refresh}
             />
           </section>
         )}
