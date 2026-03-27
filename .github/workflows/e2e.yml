@@ -8,11 +8,6 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
-    env:
-      GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
-      GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}
-      GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
-
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +21,12 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+
+      - name: Create .env.local from secrets
+        run: |
+          echo "GOOGLE_SERVICE_ACCOUNT_EMAIL=${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}" >> .env.local
+          echo "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=${{ secrets.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY }}" >> .env.local
+          echo "GOOGLE_SHEETS_ID=${{ secrets.GOOGLE_SHEETS_ID }}" >> .env.local
 
       - name: Run E2E tests
         run: npm run test:e2e
