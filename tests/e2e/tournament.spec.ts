@@ -109,11 +109,6 @@ test.describe.serial('Tournament E2E — Google Sheets + Playwright', () => {
       await page.goto('/')
       await waitForFreshData(page)
 
-      // On scores tab, the match should no longer be there as upcoming
-      await goToTab(page, 'scores')
-      // ปี 1 vs ปี 3 should NOT be in upcoming now
-      const scoresSection = page.locator('section[aria-label="รายการแข่งขัน"]')
-
       // Go to finished tab — the match should appear there
       await goToTab(page, 'finished')
       const finishedSection = page.locator('section[aria-label="รายการแข่งขันที่ผ่านไปแล้ว"]')
