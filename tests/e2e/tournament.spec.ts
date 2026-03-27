@@ -162,17 +162,19 @@ test.describe.serial('Tournament E2E — Google Sheets + Playwright', () => {
 
       await expect(commentInput).toBeVisible({ timeout: 20_000 })
 
-      // Type and submit the comment
+      // Type and submit the comment, waiting for the API response
       await commentInput.fill(TEST_COMMENT)
-      await commentInput.press('Enter')
+      await Promise.all([
+        page.waitForResponse((r) => r.url().includes('/api/comment') && r.status() === 200),
+        commentInput.press('Enter'),
+      ])
 
-      // Wait for the comment to be posted
-      await page.waitForTimeout(3_000)
-
-      // Verify the comment is in the Google Sheet
-      const rows = await readComments()
-      const found = rows.some((row) => row[1] === TEST_COMMENT)
-      expect(found).toBe(true)
+      // Retry reading comments from the sheet (eventual consistency)
+      await expect(async () => {
+        const rows = await readComments()
+        const found = rows.some((row) => row[1] === TEST_COMMENT)
+        expect(found).toBe(true)
+      }).toPass({ timeout: 15_000, intervals: [1_000, 2_000, 3_000] })
     } finally {
       // Revert status and delete the test comment
       await writeCell('matches!H2', origStatus || 'upcoming')
